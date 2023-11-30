@@ -22,7 +22,7 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate (getLayoutInflater());
         setContentView(binding.getRoot());
         binding.btnLogin.setOnClickListener(view -> login());
-        binding.btnLogin.setOnClickListener(view ->
+        binding.tvSignup.setOnClickListener(view ->
             startActivity(new Intent(this, SignUpActivity.class)));
 
 
