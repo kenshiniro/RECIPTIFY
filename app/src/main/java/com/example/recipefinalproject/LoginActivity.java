@@ -2,6 +2,7 @@ package com.example.recipefinalproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
@@ -20,12 +21,11 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityLoginBinding.inflate (getLayoutInflater());
         setContentView(binding.getRoot());
-        binding.btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                login();
-            }
-        });
+        binding.btnLogin.setOnClickListener(view -> login());
+        binding.btnLogin.setOnClickListener(view ->
+            startActivity(new Intent(this, SignUpActivity.class)));
+
+
     }
 
     private void login() {
