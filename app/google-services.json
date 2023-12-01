@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "970559916427",
+    "project_id": "recipe-final-project-f2caa",
+    "storage_bucket": "recipe-final-project-f2caa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:970559916427:android:3cf63d034ce9fa400d078e",
+        "android_client_info": {
+          "package_name": "com.example.recipefinalproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBezL11okEnIJBjdGOacZNL9T39UKw8cTk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
