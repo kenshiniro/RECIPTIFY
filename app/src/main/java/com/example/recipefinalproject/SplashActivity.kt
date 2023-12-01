@@ -7,6 +7,10 @@ import android.os.Looper;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.recipefinalproject.databinding.ActivitySplashBinding;
+import com.google.firebase.Firebase
+import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 class SplashActivity : AppCompatActivity() {
 
@@ -35,7 +39,14 @@ class SplashActivity : AppCompatActivity() {
                     binding.progressBar.progress = progress
                     handler.postDelayed(runnable, timeInterval.toLong())
                 } else {
-                    startActivities(arrayOf(Intent(this@SplashActivity, LoginActivity::class.java)));
+                    /*FirebaseApp.initializeApp(this@SplashActivity)
+                    val user: FirebaseUser? = FirebaseAuth.getInstance().currentUser
+                    if (user !=null )
+                        if (user != null) {
+                            startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                        } else { */
+                            startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
+                        //}
                     finish();
                 }
             }

@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.recipefinalproject.databinding.ActivityLoginBinding;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
 
@@ -39,7 +41,22 @@ public class LoginActivity extends AppCompatActivity {
         } else if (password.length() < 6) {
             Toast.makeText( this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText( this, "Login successful", Toast.LENGTH_SHORT).show();
+
+            FirebaseApp.initializeApp(this);
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            auth.signInWithEmailAndPassword(email,password).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                Toast.makeText( this, "Login Successful!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
+            }else {
+                Toast.makeText( this, "Login Failed: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+        });
+
+            }
+
         }
+
     }
-}

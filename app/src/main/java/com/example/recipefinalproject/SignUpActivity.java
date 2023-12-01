@@ -6,6 +6,9 @@ import android.util.Patterns;
 import android.widget.Toast;
 
 import com.example.recipefinalproject.databinding.ActivitySignUpBinding;
+import com.google.firebase.Firebase;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
 
@@ -30,7 +33,21 @@ public class SignUpActivity extends AppCompatActivity {
         } else if (password.length() < 6) {
             Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "Signup Successful", Toast.LENGTH_SHORT).show();
+            createNewUser(name,email,password);
         }
+    }
+
+    private void createNewUser(String name, String email, String password){
+        FirebaseApp.initializeApp(this);
+        FirebaseAuth auth= FirebaseAuth.getInstance();
+        auth.createUserWithEmailAndPassword(email,password)
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        Toast.makeText(this,"Account Created Successfully", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }else{
+                        Toast.makeText(this,"Account Creation Failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
