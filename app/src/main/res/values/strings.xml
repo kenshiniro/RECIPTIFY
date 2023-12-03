@@ -6,4 +6,7 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="profile">Profile</string>
+    <string name="categories">Categories</string>
+    <string name="see_more">See More</string>
 </resources>
