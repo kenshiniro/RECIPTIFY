@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_category"
         android:name="com.example.recipefinalproject.fragment.CategoriesFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_category" />
