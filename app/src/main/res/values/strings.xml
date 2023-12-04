@@ -10,4 +10,5 @@
     <string name="categories">Categories</string>
     <string name="see_more">See More</string>
     <string name="cooking_made_easy_none_recipe_at_a_time">Cooking Made Easy, \nOne Recipe at a Time!</string>
+    <string name="developer_email">email@.com</string>
 </resources>
