@@ -6,14 +6,16 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.recipefinalproject.R;
 import com.example.recipefinalproject.databinding.ItemCategoryBinding;
 import com.example.recipefinalproject.models.Category;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryHolder> {
-    List<Category> categoryList;
+    List<Category> categoryList = new ArrayList<>();
 
     public void setCategoryList(List<Category> categoryList) {
         this.categoryList = categoryList;
@@ -47,13 +49,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         public void onBind(Category category) {
             binding.tvName.setText(category.getName());
-            if(category.getName().equalsIgnoreCase("Lunch")) {
-                binding.imgBgCategory.setImageResource(R.drawable.lunch);
-            } else if(category.getName().equalsIgnoreCase("Dinner")) {
-                binding.imgBgCategory.setImageResource(R.drawable.recipe1);
-            } else {
-                binding.imgBgCategory.setImageResource(R.drawable.breakfast);
-            }
+
+            Glide
+                    .with(binding.getRoot().getContext())
+                    .load(category.getImage())
+                    .centerCrop()
+                    .placeholder(R.mipmap.ic_launcher)
+                    .into(binding.imgBgCategory);
 
         }
     }

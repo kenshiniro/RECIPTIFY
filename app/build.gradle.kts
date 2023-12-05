@@ -61,5 +61,9 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")
     implementation ("de.hdodenhof:circleimageview:3.1.0")
+    implementation("com.google.firebase:firebase-database")
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+
+
 
 }
