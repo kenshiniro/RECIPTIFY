@@ -78,13 +78,14 @@ public class ProfileFragment extends Fragment implements IPickResult {
             }).setOnPickCancel(() -> Toast.makeText(requireContext(),"Cancelled", Toast.LENGTH_SHORT).show());
         });
 
-        binding.imgEditCover.setOnClickListener(View ->
-                PickImageDialog.build(new PickSetup()).show(requireActivity()).setOnPickResult(r -> {
-                    Log.e("ProfileFragment", "onPickResult: " + r.getUri());
-                    binding.imageBanner.setImageBitmap(r.getBitmap());
-                    binding.imageBanner.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    uploadCoverImage(r.getBitmap());
-                }).setOnPickCancel(() -> Toast.makeText(requireContext(),"Cancelled", Toast.LENGTH_SHORT).show()));
+        binding.imgEditCover.setOnClickListener(View -> {
+            PickImageDialog.build(new PickSetup()).show(requireActivity()).setOnPickResult(r -> {
+                Log.e("ProfileFragment", "onPickResult: " + r.getUri());
+                binding.imageBanner.setImageBitmap(r.getBitmap());
+                binding.imageBanner.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                uploadCoverImage(r.getBitmap());
+            }).setOnPickCancel(() -> Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_SHORT).show());
+        });
             }
 
     private void uploadCoverImage(Bitmap bitmap) {
