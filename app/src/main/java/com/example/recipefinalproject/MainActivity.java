@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
             if (FirebaseAuth.getInstance().getCurrentUser() == null)
                 Toast.makeText(this, "Please login to add recipe", Toast.LENGTH_SHORT).show();
             else
-                startActivity(new Intent(MainActivity.this, AddRecipeActivity.class));*/
+                startActivity(new Intent(MainActivity.this, AddRecipeActivity.class));
         });
     }
 
