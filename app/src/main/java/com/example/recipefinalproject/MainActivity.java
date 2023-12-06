@@ -2,6 +2,7 @@ package com.example.recipefinalproject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.recipefinalproject.databinding.ActivityMainBinding;
@@ -22,12 +23,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main2);
         NavigationUI.setupWithNavController(binding.navView, navController);
-        binding.floatingActionButton.setOnClickListener(view -> {
-            if (FirebaseAuth.getInstance().getCurrentUser() == null)
-                Toast.makeText(this, "Please login to add recipe", Toast.LENGTH_SHORT).show();
-            else
-                startActivity(new Intent(MainActivity.this, AddRecipeActivity.class));
-        });
-    }
-
+        binding.floatingActionButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, AddRecipeActivity.class)));
+}
 }
