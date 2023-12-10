@@ -154,10 +154,10 @@ public class ProfileFragment extends Fragment implements IPickResult {
         binding.rvProfile.setLayoutManager(new GridLayoutManager(getContext(),2));
         binding.rvProfile.setAdapter(new RecipeAdapter());
         List<Recipe> recipes = new ArrayList<>();
-        recipes.add(new Recipe("1","Popular One","recipe1","null","Popular","null","","","",""));
-        recipes.add(new Recipe("2","Popular Two","recipe2","null","Popular","null","","","",""));
-        recipes.add(new Recipe("3","Popular Three","recipe1","null","Popular","null","","","",""));
-        recipes.add(new Recipe("4","Popular Four","recipe2","null","Popular","null","","","",""));
+        recipes.add(new Recipe("1","Popular One","recipe1","null","Popular","null",""));
+        recipes.add(new Recipe("2","Popular Two","recipe2","null","Popular","null",""));
+        recipes.add(new Recipe("3","Popular Three","recipe1","null","Popular","null",""));
+        recipes.add(new Recipe("4","Popular Four","recipe2","null","Popular","null",""));
         RecipeAdapter adapter = (RecipeAdapter) binding.rvProfile.getAdapter();
         if (adapter != null) {
             adapter.setRecipeList(recipes);

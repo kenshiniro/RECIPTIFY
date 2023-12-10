@@ -6,27 +6,21 @@ public class Recipe {
     private String image;
     private String description;
     private String category;
-    private String instructions;
-    private String ingredients;
     private String calories;
     private String time;
-    private String serving;
 
-    public Recipe() {
+    private String authorId;
 
-    }
 
-    public Recipe(String id, String name, String image, String description, String category, String instructions, String ingredients, String calories, String time, String serving) {
-        this.id = id;
+
+    public Recipe(String name, String description, String category, String calories, String time, String image, String authorId) {
         this.name = name;
-        this.image = image;
         this.description = description;
         this.category = category;
-        this.instructions = instructions;
-        this.ingredients = ingredients;
         this.calories = calories;
         this.time = time;
-        this.serving = serving;
+        this.image = image;
+        this.authorId = authorId;
     }
 
     public String getId() {
@@ -69,22 +63,6 @@ public class Recipe {
         this.category = category;
     }
 
-    public String getInstructions() {
-        return instructions;
-    }
-
-    public void setInstructions(String instructions) {
-        this.instructions = instructions;
-    }
-
-    public String getIngredients() {
-        return ingredients;
-    }
-
-    public void setIngredients(String ingredients) {
-        this.ingredients = ingredients;
-    }
-
     public String getCalories() {
         return calories;
     }
@@ -101,11 +79,11 @@ public class Recipe {
         this.time = time;
     }
 
-    public String getServing() {
-        return serving;
+    public String getAuthorId() {
+        return authorId;
     }
 
-    public void setServing(String serving) {
-        this.serving = serving;
+    public void setAuthorId(String authorId) {
+        this.authorId = authorId;
     }
 }
