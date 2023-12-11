@@ -4,6 +4,8 @@ import static java.lang.System.currentTimeMillis;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.bumptech.glide.Glide;
 import com.example.recipefinalproject.databinding.ActivityAddRecipeBinding;
 import com.example.recipefinalproject.models.Category;
 import com.example.recipefinalproject.models.Recipe;
@@ -21,6 +23,7 @@ import com.vansuita.pickimage.dialog.PickImageDialog;
 
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,8 +40,9 @@ public class AddRecipeActivity extends AppCompatActivity {
 
     ActivityAddRecipeBinding binding;
     private boolean isImageSelected = false;
-    private Bitmap bitmap;
     private ProgressDialog dialog;
+
+    boolean isEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +57,30 @@ public class AddRecipeActivity extends AppCompatActivity {
         binding.imgRecipe.setOnClickListener(view -> {
             pickImage();
         });
-    }
+        boolean isEdit = getIntent().getBooleanExtra("isEdit",false);
+            if(isEdit){
+                editRecipe();
+            }
+        }
+        private void editRecipe(){
+            Recipe recipe = (Recipe) getIntent().getSerializableExtra("recipe");
+            isImageSelected=true;
+            binding.etRecipeName.setText(recipe.getName());
+            binding.etDescription.setText(recipe.getDescription());
+            binding.etCookingTime.setText(recipe.getTime());
+            binding.etCategory.setText(recipe.getCategory());
+            binding.etCalories.setText(recipe.getCalories());
+
+            Glide
+                    .with(binding.getRoot().getContext())
+                    .load(recipe.getImage())
+                    .centerCrop()
+                    .placeholder(R.drawable.image_placeholder)
+                    .into(binding.imgRecipe);
+
+            binding.btnAddRecipe.setText("Update Recipe");
+        }
+
 
     private void loadCategories() {
         List<String> categories = new ArrayList<>();
@@ -83,7 +110,6 @@ public class AddRecipeActivity extends AppCompatActivity {
             PickImageDialog.build(new PickSetup()).show(AddRecipeActivity.this).setOnPickResult(r -> {
                 Log.e("ProfileFragment", "onPickResult: " + r.getUri());
                 binding.imgRecipe.setImageBitmap(r.getBitmap());
-                bitmap = r.getBitmap();
                 binding.imgRecipe.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 isImageSelected = true;
             }).setOnPickCancel(() -> Toast.makeText(AddRecipeActivity.this,"Cancelled", Toast.LENGTH_SHORT).show());
@@ -132,7 +158,12 @@ public class AddRecipeActivity extends AppCompatActivity {
     private String uploadImage(Recipe recipe) {
         final String[] url = {""};
 
-        String id = currentTimeMillis() + "";
+        binding.imgRecipe.setDrawingCacheEnabled(true);
+        Bitmap bitmap= ((BitmapDrawable) binding.imgRecipe.getDrawable()).getBitmap();
+        binding.imgRecipe.setDrawingCacheEnabled(false);
+
+        String id = isEdit ? recipe.getId() : currentTimeMillis() +"";
+
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference().child("images/" + id + "_recipe.jpg");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -164,19 +195,32 @@ public class AddRecipeActivity extends AppCompatActivity {
     private void saveDataInDatabase(Recipe recipe, String url) {
         recipe.setImage(url);
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Recipes");
+
+        if(isEdit){
+            reference.child(recipe.getId()).setValue(recipe).addOnCompleteListener(task -> {
+                dialog.dismiss();
+                if (task.isSuccessful()) {
+                    Toast.makeText(AddRecipeActivity.this, "Recipe Updated Successfully", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(AddRecipeActivity.this, "Error in updating recipe", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }else {
+
         String id = reference.push().getKey();
         recipe.setId(id);
         if (id != null) {
             reference.child(id).setValue(recipe).addOnCompleteListener(task -> {
+                dialog.dismiss();
                 if (task.isSuccessful()) {
-                    dialog.dismiss();
                     Toast.makeText(AddRecipeActivity.this, "Recipe Added Successfully", Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
-                    dialog.dismiss();
-                    Toast.makeText(AddRecipeActivity.this, "Error in adding Recipe", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddRecipeActivity.this, "Error in adding recipe", Toast.LENGTH_SHORT).show();
                 }
             });
         }
     }
+}
 }

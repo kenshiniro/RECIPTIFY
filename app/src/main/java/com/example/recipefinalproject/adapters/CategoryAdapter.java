@@ -1,12 +1,15 @@
 package com.example.recipefinalproject.adapters;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.recipefinalproject.AllRecipesActivity;
 import com.example.recipefinalproject.R;
 import com.example.recipefinalproject.databinding.ItemCategoryBinding;
 import com.example.recipefinalproject.models.Category;
@@ -56,6 +59,17 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
                     .centerCrop()
                     .placeholder(R.mipmap.ic_launcher)
                     .into(binding.imgBgCategory);
+
+            binding.getRoot().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent=new Intent(binding.getRoot().getContext(), AllRecipesActivity.class);
+                    intent.putExtra("type", "category");
+                    intent.putExtra("category", category.getName());
+                    binding.getRoot().getContext().startActivity(intent);
+
+                }
+            });
 
         }
     }

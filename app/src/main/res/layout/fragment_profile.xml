@@ -8,15 +8,13 @@
 
     <ImageView
         android:id="@+id/imageBanner"
-        android:layout_width="416dp"
-        android:layout_height="115dp"
-        android:layout_marginStart="38dp"
-        android:layout_marginEnd="373dp"
+        android:layout_width="420dp"
+        android:layout_height="172dp"
         android:src="@drawable/bg_default_recipe"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.102"
+        app:layout_constraintHorizontal_bias="0.521"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:layout_editor_absoluteY="-28dp" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/userProfilePic"
@@ -30,7 +28,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.098"
+        app:layout_constraintVertical_bias="0.132"
         tools:src="@drawable/profile" />
 
     <ImageView
@@ -42,7 +40,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/imageBanner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageBanner"
-        app:layout_constraintVertical_bias="0.901"
+        app:layout_constraintVertical_bias="0.858"
         app:tint="@color/white" />
 
     <TextView
@@ -67,15 +65,16 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_profile"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="376dp"
+        android:layout_height="425dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.421"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtview_email"
-        app:layout_constraintVertical_bias="0.543" />
+        app:layout_constraintVertical_bias="0.154" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/image_edit"

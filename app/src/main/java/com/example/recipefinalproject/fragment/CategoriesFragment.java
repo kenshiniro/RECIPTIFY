@@ -39,6 +39,7 @@ public class CategoriesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        binding.rvCategories.setAdapter(new CategoryAdapter());
         loadCategories();
     }
 
@@ -50,15 +51,20 @@ public class CategoriesFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<Category> categories = new ArrayList<>();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Category category = dataSnapshot.getValue(Category.class);
                     categories.add(category);
                 }
-                CategoryAdapter adapter = (CategoryAdapter) binding.rvCategories.getAdapter();
-                if (adapter != null) {
-                    adapter.setCategoryList(categories);
+
+
+                    CategoryAdapter adapter= (CategoryAdapter) binding.rvCategories.getAdapter();
+                    if(adapter!=null){
+                        adapter.setCategoryList(categories);
+                    }
                 }
-            }
+
+
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {

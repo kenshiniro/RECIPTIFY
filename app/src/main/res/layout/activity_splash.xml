@@ -4,24 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/splash_bg"
+    android:background="@drawable/splash_background_"
     tools:context=".SplashActivity">
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="237dp"
-        android:layout_height="87dp"
+        android:layout_width="258dp"
+        android:layout_height="106dp"
         android:layout_marginStart="122dp"
-        android:layout_marginTop="328dp"
+        android:layout_marginTop="288dp"
         android:layout_marginEnd="123dp"
-        android:fontFamily="sans-serif-black"
-        android:text="RECIPTIFY"
+        android:fontFamily="@font/nunito_sans_bold_italic"
+        android:text="Reciptify"
         android:textAlignment="gravity"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="#F3ECEC"
-        android:textSize="48sp"
+        android:textSize="60sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.382"
+        app:layout_constraintHorizontal_bias="0.409"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,4 +36,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.477"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="217dp"
+        android:layout_height="182dp"
+        android:layout_marginBottom="316dp"
+        app:layout_constraintBottom_toBottomOf="@+id/progressBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/logo" />
 </androidx.constraintlayout.widget.ConstraintLayout>
