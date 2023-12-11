@@ -119,7 +119,7 @@ public class AddRecipeActivity extends AppCompatActivity {
             dialog.setCancelable(false);
             dialog.show();
 
-            Recipe recipe = new Recipe(recipeName, recipeDescription, cookingTime, recipeCategory, calories, "", FirebaseAuth.getInstance().getUid());
+            Recipe recipe = new Recipe(recipeName, recipeDescription, recipeCategory, calories, cookingTime, "", FirebaseAuth.getInstance().getUid());
 
             uploadImage(recipe);
 
