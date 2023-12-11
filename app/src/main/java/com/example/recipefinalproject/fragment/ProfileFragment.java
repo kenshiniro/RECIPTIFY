@@ -3,6 +3,7 @@ package com.example.recipefinalproject.fragment;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -154,16 +155,25 @@ public class ProfileFragment extends Fragment implements IPickResult {
     private void loadUserRecipes(){
         binding.rvProfile.setLayoutManager(new GridLayoutManager(getContext(),2));
         binding.rvProfile.setAdapter(new RecipeAdapter());
-        List<Recipe> recipes = new ArrayList<>();
-        recipes.add(new Recipe("1","Popular One","recipe1","null","Popular","null",""));
-        recipes.add(new Recipe("2","Popular Two","recipe2","null","Popular","null",""));
-        recipes.add(new Recipe("3","Popular Three","recipe1","null","Popular","null",""));
-        recipes.add(new Recipe("4","Popular Four","recipe2","null","Popular","null",""));
-        RecipeAdapter adapter = (RecipeAdapter) binding.rvProfile.getAdapter();
-        if (adapter != null) {
-            adapter.setRecipeList(recipes);
-            adapter.notifyDataSetChanged();
-        }
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        reference.child("Recipes").orderByChild("authorId").equalTo(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Recipe> recipes = new ArrayList<>();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Recipe recipe = dataSnapshot.getValue(Recipe.class);
+                    recipes.add(recipe);
+                }
+                ((RecipeAdapter) Objects.requireNonNull(binding.rvProfile.getAdapter())).setRecipeList(recipes);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("Profile Fragment", "onCancelled:" + error.getMessage());
+            }
+        });
+
     }
     private void loadProfile(){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();

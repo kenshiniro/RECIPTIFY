@@ -8,10 +8,12 @@ public class Recipe {
     private String category;
     private String calories;
     private String time;
-
     private String authorId;
 
-
+    // Empty constructor required for Firebase
+    public Recipe() {
+        // Default constructor required for calls to DataSnapshot.getValue(Recipe.class)
+    }
 
     public Recipe(String name, String description, String category, String calories, String time, String image, String authorId) {
         this.name = name;
@@ -22,6 +24,8 @@ public class Recipe {
         this.image = image;
         this.authorId = authorId;
     }
+
+    // Getters and setters as before
 
     public String getId() {
         return id;

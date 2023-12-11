@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.recipefinalproject.adapters.HorizontalRecipeAdapter;
 import com.example.recipefinalproject.adapters.RecipeAdapter;
 import com.example.recipefinalproject.databinding.FragmentHomeBinding;
 import com.example.recipefinalproject.models.Recipe;
@@ -43,13 +44,13 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadPopularRecipes() {
-        binding.rvPopulars.setAdapter(new RecipeAdapter());
+        binding.rvPopulars.setAdapter(new HorizontalRecipeAdapter());
         popularRecipes = new ArrayList<>();
         popularRecipes.add(new Recipe("1","Popular One","recipe1","null","Popular","null", ""));
         popularRecipes.add(new Recipe("2","Popular Two","recipe2","null","Popular","null", ""));
         popularRecipes.add(new Recipe("3","Popular Three","recipe1","null","Popular","null", ""));
         popularRecipes.add(new Recipe("4","Popular Four","recipe2","null","Popular","null", ""));
-        RecipeAdapter adapter = (RecipeAdapter) binding.rvPopulars.getAdapter();
+        HorizontalRecipeAdapter adapter = (HorizontalRecipeAdapter) binding.rvPopulars.getAdapter();
         if (adapter != null) {
             adapter.setRecipeList(favoriteRecipes);
             adapter.notifyDataSetChanged();
@@ -63,8 +64,8 @@ public class HomeFragment extends Fragment {
         favoriteRecipes.add(new Recipe("2","Favorite Two","recipe2","null","Favorite","null", ""));
         favoriteRecipes.add(new Recipe("3","Favorite Three","recipe1","null","Favorite","null",""));
         favoriteRecipes.add(new Recipe("4","Favorite Four","recipe2","null","Favorite","null",""));
-        binding.rvFavouriteMeal.setAdapter(new RecipeAdapter());
-        RecipeAdapter adapter = (RecipeAdapter) binding.rvFavouriteMeal.getAdapter();
+        binding.rvFavouriteMeal.setAdapter(new HorizontalRecipeAdapter());
+        HorizontalRecipeAdapter adapter = (HorizontalRecipeAdapter) binding.rvFavouriteMeal.getAdapter();
             if (adapter != null) {
                 adapter.setRecipeList(favoriteRecipes);
                 adapter.notifyDataSetChanged();
