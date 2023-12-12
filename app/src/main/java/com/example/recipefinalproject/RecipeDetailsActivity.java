@@ -95,7 +95,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         RecipeRepository repository = new RecipeRepository(getApplication());
         boolean isFavourite = repository.isFavourite(recipe.getId());
         if (isFavourite) {
-            binding.imgFvrt.setColorFilter(getResources().getColor(R.color.black));
+            binding.imgFvrt.setColorFilter(getResources().getColor(R.color.accent));
         } else {
             binding.imgFvrt.setColorFilter(getResources().getColor(R.color.black));
         }
@@ -106,7 +106,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         boolean isFavourite = repository.isFavourite(recipe.getId());
         if (isFavourite) {
             repository.delete(new FavouriteRecipe(recipe.getId()));
-            binding.imgFvrt.setColorFilter(getResources().getColor(R.color.black));
+            binding.imgFvrt.setColorFilter(getResources().getColor(R.color.accent));
         } else {
             repository.insert(new FavouriteRecipe(recipe.getId()));
             binding.imgFvrt.setColorFilter(getResources().getColor(R.color.black));
