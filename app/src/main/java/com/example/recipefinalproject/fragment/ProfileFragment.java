@@ -1,5 +1,6 @@
 package com.example.recipefinalproject.fragment;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.example.recipefinalproject.R;
+import com.example.recipefinalproject.SettingActivity;
 import com.example.recipefinalproject.adapters.RecipeAdapter;
 import com.example.recipefinalproject.databinding.FragmentProfileBinding;
 import com.example.recipefinalproject.models.Recipe;
@@ -87,6 +89,8 @@ public class ProfileFragment extends Fragment implements IPickResult {
                 uploadCoverImage(r.getBitmap());
             }).setOnPickCancel(() -> Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_SHORT).show());
         });
+
+        binding.btnSetting.setOnClickListener(view1 -> startActivity(new Intent(requireContext(), SettingActivity.class)));
             }
 
     private void uploadCoverImage(Bitmap bitmap) {

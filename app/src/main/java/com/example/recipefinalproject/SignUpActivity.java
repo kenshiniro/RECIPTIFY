@@ -1,19 +1,29 @@
 package com.example.recipefinalproject;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.widget.Toast;
 
 import com.example.recipefinalproject.databinding.ActivitySignUpBinding;
+import com.example.recipefinalproject.models.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Firebase;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 
 public class SignUpActivity extends AppCompatActivity {
     ActivitySignUpBinding binding;
+    ProgressDialog dialog;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivitySignUpBinding.inflate(getLayoutInflater());;
@@ -38,16 +48,40 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void createNewUser(String name, String email, String password){
+
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("Creating user...");
+        dialog.setCancelable(false);
+        dialog.show();
         FirebaseApp.initializeApp(this);
         FirebaseAuth auth= FirebaseAuth.getInstance();
         auth.createUserWithEmailAndPassword(email,password)
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful()){
-                        Toast.makeText(this,"Account Created Successfully", Toast.LENGTH_SHORT).show();
-                        finish();
+                        saveName(name, email);
                     }else{
+                        dialog.dismiss();
                         Toast.makeText(this,"Account Creation Failed", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void saveName(String name, String email) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
+        User user = new User(FirebaseAuth.getInstance().getUid(), name, email, "", "");
+        reference.child(Objects.requireNonNull(FirebaseAuth.getInstance().getUid())).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isComplete()) {
+                    dialog.dismiss();
+                    Toast.makeText(SignUpActivity.this, "User created successfully", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+                    finishAffinity();
+                } else {
+                    dialog.dismiss();
+                    Toast.makeText(SignUpActivity.this, "Failed to create user", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }
