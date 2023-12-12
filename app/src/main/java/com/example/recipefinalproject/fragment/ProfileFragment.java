@@ -1,5 +1,6 @@
 package com.example.recipefinalproject.fragment;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -66,9 +67,18 @@ public class ProfileFragment extends Fragment implements IPickResult {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
-        loadProfile();
-        loadUserRecipes();
-        init();
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Login Required")
+                    .setMessage("You need to login to view your profile")
+                    .show();
+        } else {
+
+
+            loadProfile();
+            loadUserRecipes();
+            init();
+        }
     }
 
     private void init() {

@@ -26,4 +26,6 @@ public interface RecipeDao {
     @Query("SELECT * FROM favourite_recipes")
     List<FavouriteRecipe> getAllFavourites();
 
+
+
 }
