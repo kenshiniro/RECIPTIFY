@@ -9,12 +9,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-/**
- * Welcome to HashMac
- * Here we will write our Repository Class
- * We will write code to insert, delete and get all data from database
- */
-
 public class RecipeRepository {
     private RecipeDao recipeDao;
 

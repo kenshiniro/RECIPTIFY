@@ -12,22 +12,17 @@ public class Recipe implements Serializable {
     private String time;
     private String authorId;
 
-    // Empty constructor required for Firebase
-    public Recipe() {
-        // Default constructor required for calls to DataSnapshot.getValue(Recipe.class)
-    }
+    public Recipe() {}
 
-    public Recipe(String name, String description, String category, String calories, String time, String image, String authorId) {
+    public Recipe(String name, String description, String time, String category, String calories, String image, String authorId) {
         this.name = name;
         this.description = description;
+        this.time = time;
         this.category = category;
         this.calories = calories;
-        this.time = time;
         this.image = image;
         this.authorId = authorId;
     }
-
-    // Getters and setters as before
 
     public String getId() {
         return id;

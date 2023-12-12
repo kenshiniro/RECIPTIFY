@@ -29,3 +29,4 @@ public class FavouriteRecipe {
         this.recipeId = recipeId;
     }
 }
+
