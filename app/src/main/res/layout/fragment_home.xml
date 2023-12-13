@@ -94,7 +94,7 @@
         app:layout_constraintTop_toBottomOf="@+id/rv_favourite_meal" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_populars"
+        android:id="@+id/rv_Populars"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"

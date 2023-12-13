@@ -53,13 +53,12 @@ public class FavouritesFragment extends Fragment {
         if (favouriteRecipes.isEmpty()) {
             Toast.makeText(requireContext(), "No Favourites", Toast.LENGTH_SHORT).show();
             binding.rvFavourites.setVisibility(View.GONE);
-
         } else {
             binding.rvFavourites.setLayoutManager(new GridLayoutManager(requireContext(), 2));
             binding.rvFavourites.setAdapter(new RecipeAdapter());
             List<Recipe> recipes = new ArrayList<>();
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Recipes");
-            reference.addValueEventListener(new ValueEventListener() {
+            reference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.hasChildren()) {
@@ -67,7 +66,6 @@ public class FavouritesFragment extends Fragment {
                             for (FavouriteRecipe favouriteRecipe : favouriteRecipes) {
                                 if (dataSnapshot.getKey().equals(favouriteRecipe.getRecipeId())) {
                                     recipes.add(dataSnapshot.getValue(Recipe.class));
-
                                 }
                             }
                         }
@@ -75,6 +73,7 @@ public class FavouritesFragment extends Fragment {
                         if (adapter != null) {
                             adapter.setRecipeList(recipes);
                         }
+
                     } else {
                         binding.rvFavourites.setVisibility(View.GONE);
                     }
@@ -87,6 +86,4 @@ public class FavouritesFragment extends Fragment {
             });
         }
     }
-
-
 }

@@ -23,7 +23,7 @@
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_profile" />
     <fragment
-        android:id="@+id/navigation_favorites"
+        android:id="@+id/navigation_favourites"
         android:name="com.example.recipefinalproject.fragment.FavouritesFragment"
         android:label="fragment_favourites"
         tools:layout="@layout/fragment_favourites" />

@@ -22,4 +22,10 @@
         android:name="com.example.recipefinalproject.fragment.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/navigation_favourites"
+        android:name="com.example.recipefinalproject.fragment.FavouritesFragment"
+        android:label="fragment_favourites"
+        tools:layout="@layout/fragment_favourites"/>
 </navigation>
