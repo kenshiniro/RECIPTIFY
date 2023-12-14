@@ -1,89 +1,71 @@
-package com.example.recipefinalproject.fragment;
+package com.example.recipefinalproject.fragment
 
-import android.os.Bundle;
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import com.example.recipefinalproject.adapters.RecipeAdapter
+import com.example.recipefinalproject.databinding.FragmentFavouritesBinding
+import com.example.recipefinalproject.models.Recipe
+import com.example.recipefinalproject.room.RecipeRepository
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.Toast;
-
-import com.example.recipefinalproject.R;
-import com.example.recipefinalproject.adapters.RecipeAdapter;
-import com.example.recipefinalproject.databinding.FragmentFavouritesBinding;
-import com.example.recipefinalproject.models.FavouriteRecipe;
-import com.example.recipefinalproject.models.Recipe;
-import com.example.recipefinalproject.room.RecipeRepository;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-
-public class FavouritesFragment extends Fragment {
-    FragmentFavouritesBinding binding;
-    RecipeRepository recipeRepository;
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentFavouritesBinding.inflate(inflater, container, false);
-        return binding.getRoot();
+class FavouritesFragment : Fragment() {
+    var binding: FragmentFavouritesBinding? = null
+    var recipeRepository: RecipeRepository? = null
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentFavouritesBinding.inflate(inflater, container, false)
+        return binding!!.root
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        loadFavorites();
+    override fun onResume() {
+        super.onResume()
+        loadFavorites()
     }
 
-    private void loadFavorites() {
-        recipeRepository = new RecipeRepository(requireActivity().getApplication());
-        List<FavouriteRecipe> favouriteRecipes = recipeRepository.getAllFavourites();
+    private fun loadFavorites() {
+        recipeRepository = RecipeRepository(requireActivity().application)
+        val favouriteRecipes = recipeRepository!!.allFavourites
         if (favouriteRecipes.isEmpty()) {
-            Toast.makeText(requireContext(), "No Favourites", Toast.LENGTH_SHORT).show();
-            binding.rvFavourites.setVisibility(View.GONE);
+            Toast.makeText(requireContext(), "No Favourites", Toast.LENGTH_SHORT).show()
+            binding!!.rvFavourites.visibility = View.GONE
         } else {
-            binding.rvFavourites.setLayoutManager(new GridLayoutManager(requireContext(), 2));
-            binding.rvFavourites.setAdapter(new RecipeAdapter());
-            List<Recipe> recipes = new ArrayList<>();
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Recipes");
-            reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
+            binding!!.rvFavourites.layoutManager = GridLayoutManager(requireContext(), 2)
+            binding!!.rvFavourites.adapter = RecipeAdapter()
+            val recipes: MutableList<Recipe?> = ArrayList()
+            val reference = FirebaseDatabase.getInstance().getReference("Recipes")
+            reference.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.hasChildren()) {
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            for (FavouriteRecipe favouriteRecipe : favouriteRecipes) {
-                                if (dataSnapshot.getKey().equals(favouriteRecipe.getRecipeId())) {
-                                    recipes.add(dataSnapshot.getValue(Recipe.class));
+                        for (dataSnapshot in snapshot.children) {
+                            for (favouriteRecipe in favouriteRecipes) {
+                                if (dataSnapshot.key == favouriteRecipe.recipeId) {
+                                    recipes.add(dataSnapshot.getValue(Recipe::class.java))
                                 }
                             }
                         }
-                        RecipeAdapter adapter = (RecipeAdapter) binding.rvFavourites.getAdapter();
-                        if (adapter != null) {
-                            adapter.setRecipeList(recipes);
-                        }
-
+                        val adapter = binding!!.rvFavourites.adapter as RecipeAdapter?
+                        adapter?.setRecipeList(recipes)
                     } else {
-                        binding.rvFavourites.setVisibility(View.GONE);
+                        binding!!.rvFavourites.visibility = View.GONE
                     }
                 }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.e("FavouritesFragment", "onCancelled: " + error.getMessage());
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("FavouritesFragment", "onCancelled: " + error.message)
                 }
-            });
+            })
         }
     }
 }

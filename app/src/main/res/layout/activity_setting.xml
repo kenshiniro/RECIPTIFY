@@ -7,11 +7,12 @@
 
     <TextView
         android:id="@+id/textView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="20dp"
-        android:layout_width="wrap_content"
-        android:text="Satisfy your cravings with just a tap"
+        android:fontFamily="@font/archivo_black"
+        android:text="Leaving so Soon? "
         android:textColor="@color/black"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -64,7 +65,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
-                    android:text="share_app"
+                    android:text="Share App"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
 
@@ -106,7 +107,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
-                    android:text="rate_app"
+                    android:text="Rate the App"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
 
@@ -148,7 +149,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
-                    android:text="view_more_apps"
+                    android:text="View More"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
 
@@ -190,7 +191,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
-                    android:text="send_feedback"
+                    android:text="Send Feedback"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
 
@@ -232,7 +233,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
-                    android:text="privacy_policy"
+                    android:text="Privacy Policy"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
 

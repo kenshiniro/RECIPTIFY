@@ -1,238 +1,242 @@
-package com.example.recipefinalproject.fragment;
+package com.example.recipefinalproject.fragment
 
-import android.app.AlertDialog;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.Toast;
+import android.app.AlertDialog
+import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import com.bumptech.glide.Glide
+import com.example.recipefinalproject.R
+import com.example.recipefinalproject.SettingActivity
+import com.example.recipefinalproject.adapters.RecipeAdapter
+import com.example.recipefinalproject.databinding.FragmentProfileBinding
+import com.example.recipefinalproject.models.Recipe
+import com.example.recipefinalproject.models.User
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
+import com.vansuita.pickimage.bean.PickResult
+import com.vansuita.pickimage.bundle.PickSetup
+import com.vansuita.pickimage.dialog.PickImageDialog
+import com.vansuita.pickimage.listeners.IPickResult
+import java.io.ByteArrayOutputStream
+import java.util.Objects
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-
-
-import com.bumptech.glide.Glide;
-import com.example.recipefinalproject.R;
-import com.example.recipefinalproject.SettingActivity;
-import com.example.recipefinalproject.adapters.RecipeAdapter;
-import com.example.recipefinalproject.databinding.FragmentProfileBinding;
-import com.example.recipefinalproject.models.Recipe;
-import com.example.recipefinalproject.models.User;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.Firebase;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-import com.vansuita.pickimage.bean.PickResult;
-import com.vansuita.pickimage.bundle.PickSetup;
-import com.vansuita.pickimage.dialog.PickImageDialog;
-import com.vansuita.pickimage.listeners.IPickCancel;
-import com.vansuita.pickimage.listeners.IPickResult;
-
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-public class ProfileFragment extends Fragment implements IPickResult {
-
-    private User user;
-    private FragmentProfileBinding binding;
-
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-
-    binding= FragmentProfileBinding.inflate(inflater,container,false);
-
-    return binding.getRoot();
+class ProfileFragment : Fragment(), IPickResult {
+    private var user: User? = null
+    private var binding: FragmentProfileBinding? = null
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentProfileBinding.inflate(inflater, container, false)
+        return binding!!.root
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
-        super.onViewCreated(view, savedInstanceState);
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            new AlertDialog.Builder(getContext())
-                    .setTitle("Login Required")
-                    .setMessage("You need to login to view your profile")
-                    .show();
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (FirebaseAuth.getInstance().currentUser == null) {
+            AlertDialog.Builder(context)
+                .setTitle("Login Required")
+                .setMessage("You need to login to view your profile")
+                .show()
         } else {
-
-
-            loadProfile();
-            loadUserRecipes();
-            init();
+            loadProfile()
+            loadUserRecipes()
+            init()
         }
     }
 
-    private void init() {
-        binding.imageEdit.setOnClickListener(v -> {
-            PickImageDialog.build(new PickSetup()).show(requireActivity()).setOnPickResult(r -> {
-                Log.e("ProfileFragment", "onPickResult: " + r.getUri());
-                binding.userProfilePic.setImageBitmap(r.getBitmap());
-                binding.userProfilePic.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                uploadImage(r.getBitmap());
-            }).setOnPickCancel(() -> Toast.makeText(requireContext(),"Cancelled", Toast.LENGTH_SHORT).show());
-        });
-
-        binding.imgEditCover.setOnClickListener(View -> {
-            PickImageDialog.build(new PickSetup()).show(requireActivity()).setOnPickResult(r -> {
-                Log.e("ProfileFragment", "onPickResult: " + r.getUri());
-                binding.imageBanner.setImageBitmap(r.getBitmap());
-                binding.imageBanner.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                uploadCoverImage(r.getBitmap());
-            }).setOnPickCancel(() -> Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_SHORT).show());
-        });
-
-        binding.btnSetting.setOnClickListener(view1 -> startActivity(new Intent(requireContext(), SettingActivity.class)));
+    private fun init() {
+        binding!!.imageEdit.setOnClickListener { v: View? ->
+            PickImageDialog.build(PickSetup()).show(requireActivity())
+                .setOnPickResult { r: PickResult ->
+                    Log.e("ProfileFragment", "onPickResult: " + r.uri)
+                    binding!!.userProfilePic.setImageBitmap(r.bitmap)
+                    binding!!.userProfilePic.scaleType = ImageView.ScaleType.CENTER_CROP
+                    uploadImage(r.bitmap)
+                }.setOnPickCancel {
+                Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_SHORT).show()
             }
-
-    private void uploadCoverImage(Bitmap bitmap) {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference().child("images/" + FirebaseAuth.getInstance().getUid() + "cover.jpg");
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] data = baos.toByteArray();
-        UploadTask uploadTask = storageRef.putBytes(data);
-        uploadTask.continueWithTask(task -> {
-            if (!task.isSuccessful()) {
-                throw Objects.requireNonNull(task.getException());
+        }
+        binding!!.imgEditCover.setOnClickListener { View: View? ->
+            PickImageDialog.build(PickSetup()).show(requireActivity())
+                .setOnPickResult { r: PickResult ->
+                    Log.e("ProfileFragment", "onPickResult: " + r.uri)
+                    binding!!.imageBanner.setImageBitmap(r.bitmap)
+                    binding!!.imageBanner.scaleType = ImageView.ScaleType.CENTER_CROP
+                    uploadCoverImage(r.bitmap)
+                }.setOnPickCancel {
+                Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_SHORT).show()
             }
-            return storageRef.getDownloadUrl();
-        }).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Uri downloadUri = task.getResult();
-                Toast.makeText(requireContext(), "Image Uploaded Successfully", Toast.LENGTH_SHORT).show();
-                user.setCover(Objects.requireNonNull(downloadUri).toString());
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                reference.child("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getUid())).setValue(user);
-
-            } else {
-                Log.e("ProfileFragment", "onComplete: " + Objects.requireNonNull(task.getException()).getMessage());
-            }
-        });
-    }
-
-
-    private void uploadImage(Bitmap bitmap) {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference().child("images/" + FirebaseAuth.getInstance().getUid() + "image.jpg");
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] data = baos.toByteArray();
-        UploadTask uploadTask = storageRef.putBytes(data);
-        uploadTask.continueWithTask(task -> {
-            if (!task.isSuccessful()) {
-                throw Objects.requireNonNull(task.getException());
-            }
-            return storageRef.getDownloadUrl();
-        }).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Uri downloadUri = task.getResult();
-                Toast.makeText(requireContext(), "Image Uploaded Successfully", Toast.LENGTH_SHORT).show();
-                user.setImage(Objects.requireNonNull(downloadUri).toString());
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                reference.child("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getUid())).setValue(user);
-
-            } else {
-                Log.e("ProfileFragment", "onComplete: " + Objects.requireNonNull(task.getException()).getMessage());
-            }
-        });
-    }
-
-    @Override
-    public void onPickResult(PickResult r) {
-        if(r.getError() == null) {
-            Log.e("ProfileFragment", "onPickResult: " + r.getUri());
-            binding.userProfilePic.setImageBitmap(r.getBitmap());
-        } else {
-            Log.e("ProfileFragment", "onPickResult: " + r.getError().getMessage());
+        }
+        binding!!.btnSetting.setOnClickListener { view1: View? ->
+            startActivity(
+                Intent(
+                    requireContext(),
+                    SettingActivity::class.java
+                )
+            )
         }
     }
 
-    private void loadUserRecipes(){
-        binding.rvProfile.setLayoutManager(new GridLayoutManager(getContext(),2));
-        binding.rvProfile.setAdapter(new RecipeAdapter());
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        reference.child("Recipes").orderByChild("authorId").equalTo(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<Recipe> recipes = new ArrayList<>();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    Recipe recipe = dataSnapshot.getValue(Recipe.class);
-                    recipes.add(recipe);
+    private fun uploadCoverImage(bitmap: Bitmap) {
+        val storage = FirebaseStorage.getInstance()
+        val storageRef =
+            storage.reference.child("images/" + FirebaseAuth.getInstance().uid + "cover.jpg")
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val data = baos.toByteArray()
+        val uploadTask = storageRef.putBytes(data)
+        uploadTask.continueWithTask { task: Task<UploadTask.TaskSnapshot?> ->
+            if (!task.isSuccessful) {
+                throw Objects.requireNonNull(task.exception)!!
+            }
+            storageRef.downloadUrl
+        }
+            .addOnCompleteListener { task: Task<Uri> ->
+                if (task.isSuccessful) {
+                    val downloadUri = task.result
+                    Toast.makeText(
+                        requireContext(),
+                        "Image Uploaded Successfully",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    user!!.cover = Objects.requireNonNull(downloadUri).toString()
+                    val reference = FirebaseDatabase.getInstance().reference
+                    reference.child("Users")
+                        .child(Objects.requireNonNull(FirebaseAuth.getInstance().uid).toString())
+                        .setValue(user)
+                } else {
+                    Log.e(
+                        "ProfileFragment",
+                        "onComplete: " + Objects.requireNonNull(task.exception)!!.message
+                    )
                 }
-                ((RecipeAdapter) Objects.requireNonNull(binding.rvProfile.getAdapter())).setRecipeList(recipes);
-
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("Profile Fragment", "onCancelled:" + error.getMessage());
-            }
-        });
-
     }
-    private void loadProfile(){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        reference.child("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getUid())).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                user = snapshot.getValue(User.class);
-                if (user != null) {
-                    binding.txtviewUsername.setText(user.getName());
-                    binding.txtviewEmail.setText(user.getEmail());
 
-                    Glide
+    private fun uploadImage(bitmap: Bitmap) {
+        val storage = FirebaseStorage.getInstance()
+        val storageRef =
+            storage.reference.child("images/" + FirebaseAuth.getInstance().uid + "image.jpg")
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val data = baos.toByteArray()
+        val uploadTask = storageRef.putBytes(data)
+        uploadTask.continueWithTask { task: Task<UploadTask.TaskSnapshot?> ->
+            if (!task.isSuccessful) {
+                throw Objects.requireNonNull(task.exception)!!
+            }
+            storageRef.downloadUrl
+        }
+            .addOnCompleteListener { task: Task<Uri> ->
+                if (task.isSuccessful) {
+                    val downloadUri = task.result
+                    Toast.makeText(
+                        requireContext(),
+                        "Image Uploaded Successfully",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    user!!.image = Objects.requireNonNull(downloadUri).toString()
+                    val reference = FirebaseDatabase.getInstance().reference
+                    reference.child("Users")
+                        .child(Objects.requireNonNull(FirebaseAuth.getInstance().uid).toString())
+                        .setValue(user)
+                } else {
+                    Log.e(
+                        "ProfileFragment",
+                        "onComplete: " + Objects.requireNonNull(task.exception)!!.message
+                    )
+                }
+            }
+    }
+
+    override fun onPickResult(r: PickResult) {
+        if (r.error == null) {
+            Log.e("ProfileFragment", "onPickResult: " + r.uri)
+            binding!!.userProfilePic.setImageBitmap(r.bitmap)
+        } else {
+            Log.e("ProfileFragment", "onPickResult: " + r.error.message)
+        }
+    }
+
+    private fun loadUserRecipes() {
+        binding!!.rvProfile.layoutManager = GridLayoutManager(context, 2)
+        binding!!.rvProfile.adapter = RecipeAdapter()
+        val reference = FirebaseDatabase.getInstance().reference
+        reference.child("Recipes").orderByChild("authorId").equalTo(FirebaseAuth.getInstance().uid)
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val recipes: MutableList<Recipe?> = ArrayList()
+                    for (dataSnapshot in snapshot.children) {
+                        val recipe = dataSnapshot.getValue(Recipe::class.java)
+                        recipes.add(recipe)
+                    }
+                    (Objects.requireNonNull(binding!!.rvProfile.adapter) as RecipeAdapter).setRecipeList(
+                        recipes
+                    )
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("Profile Fragment", "onCancelled:" + error.message)
+                }
+            })
+    }
+
+    private fun loadProfile() {
+        val reference = FirebaseDatabase.getInstance().reference
+        reference.child("Users").child(Objects.requireNonNull(FirebaseAuth.getInstance().uid).toString())
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    user = snapshot.getValue(User::class.java)
+                    if (user != null) {
+                        binding!!.txtviewUsername.text = user!!.name
+                        binding!!.txtviewEmail.text = user!!.email
+                        Glide
                             .with(requireContext())
-                            .load(user.getImage())
+                            .load(user!!.image)
                             .centerCrop()
                             .placeholder(R.mipmap.ic_launcher)
-                            .into(binding.userProfilePic);
-
-                    Glide
+                            .into(binding!!.userProfilePic)
+                        Glide
                             .with(requireContext())
-                            .load(user.getCover())
+                            .load(user!!.cover)
                             .centerCrop()
                             .placeholder(R.drawable.bg_default_recipe)
-                            .into(binding.imageBanner);
-                }else{
-                    Log.e("ProfileFragment","onDataChange: User is non-existent" );
+                            .into(binding!!.imageBanner)
+                    } else {
+                        Log.e("ProfileFragment", "onDataChange: User is non-existent")
+                    }
                 }
 
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("ProfileFragment","onCancelled: " + error.getMessage());
-            }
-        });
-        User user = new User();
-        user.setName("Joever");
-        user.setEmail("feer@gmail.com");
-        binding.txtviewUsername.setText(user.getName());
-        binding.txtviewEmail.setText(user.getEmail());
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("ProfileFragment", "onCancelled: " + error.message)
+                }
+            })
+        val user = User()
+        user.name = "Joever"
+        user.email = "feer@gmail.com"
+        binding!!.txtviewUsername.text = user.name
+        binding!!.txtviewEmail.text = user.email
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
     }
 }

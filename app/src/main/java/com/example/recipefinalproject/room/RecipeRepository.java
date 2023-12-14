@@ -30,7 +30,7 @@ public class RecipeRepository {
 
 
     public void delete(FavouriteRecipe recipe) {
-        RecipeDatabase.databaseWriteExecutor.submit(() -> recipeDao.delete(recipe.getRecipeId()));
+        RecipeDatabase.databaseWriteExecutor.submit(() -> recipeDao.delete(recipe.recipeId));
     }
 
     public boolean isFavourite(String favouriteRecipe) {

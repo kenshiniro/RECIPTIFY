@@ -40,16 +40,17 @@ class SplashActivity : AppCompatActivity() {
                     handler.postDelayed(runnable, timeInterval.toLong())
                 } else {
                     FirebaseApp.initializeApp(this@SplashActivity)
-                   // val user: FirebaseUser? = FirebaseAuth.getInstance().currentUser
-                   // if (user !=null )
+                    //val user: FirebaseUser? = FirebaseAuth.getInstance().currentUser
+                //   if (user !=null )
                        // if (user != null) {
-                        //    startActivity(Intent(this@SplashActivity, MainActivity::class.java))
-                      //  } else {
+                          //  startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                     //  } else {
                             startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
-                        }
+
+                       // }
                     finish();
                 }
-
+                }
         }
 
         handler.postDelayed(runnable, timeInterval.toLong())

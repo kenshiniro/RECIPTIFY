@@ -1,122 +1,107 @@
-package com.example.recipefinalproject;
+package com.example.recipefinalproject
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
+import android.os.Bundle
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
+import com.example.recipefinalproject.adapters.RecipeAdapter
+import com.example.recipefinalproject.databinding.ActivityAllRecipesBinding
+import com.example.recipefinalproject.models.Recipe
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import java.util.Collections
+import java.util.Locale
 
-import android.os.Bundle;
-import android.util.Log;
-
-import com.example.recipefinalproject.adapters.RecipeAdapter;
-import com.example.recipefinalproject.databinding.ActivityAllRecipesBinding;
-import com.example.recipefinalproject.models.Recipe;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-public class AllRecipesActivity extends AppCompatActivity {
-    ActivityAllRecipesBinding binding;
-    DatabaseReference reference;
-    String type;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding= ActivityAllRecipesBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        reference = FirebaseDatabase.getInstance().getReference("Recipes");
-        binding.rvRecipes.setLayoutManager(new GridLayoutManager(this,2));
-        binding.rvRecipes.setAdapter(new RecipeAdapter());
-        type = getIntent().getStringExtra("type");
-
-
+class AllRecipesActivity : AppCompatActivity() {
+    var binding: ActivityAllRecipesBinding? = null
+    var reference: DatabaseReference? = null
+    var type: String? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityAllRecipesBinding.inflate(
+            layoutInflater
+        )
+        setContentView(binding!!.root)
+        reference = FirebaseDatabase.getInstance().getReference("Recipes")
+        binding!!.rvRecipes.layoutManager = GridLayoutManager(this, 2)
+        binding!!.rvRecipes.adapter = RecipeAdapter()
+        type = intent.getStringExtra("type")
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (type.equalsIgnoreCase("category")) {
-            filterByCategory();
-        } else if (type.equalsIgnoreCase("search")) {
-            loadByRecipes();
+    override fun onResume() {
+        super.onResume()
+        if (type.equals("category", ignoreCase = true)) {
+            filterByCategory()
+        } else if (type.equals("search", ignoreCase = true)) {
+            loadByRecipes()
         } else {
-            loadAllRecipes();
+            loadAllRecipes()
         }
     }
 
-    private void loadAllRecipes() {
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<Recipe> recipes = new ArrayList<>();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    Recipe recipe = dataSnapshot.getValue(Recipe.class);
-                    recipes.add(recipe);
+    private fun loadAllRecipes() {
+        reference!!.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val recipes: MutableList<Recipe?> = ArrayList()
+                for (dataSnapshot in snapshot.children) {
+                    val recipe = dataSnapshot.getValue(Recipe::class.java)
+                    recipes.add(recipe)
                 }
-                Collections.shuffle(recipes);
-                RecipeAdapter adapter = (RecipeAdapter) binding.rvRecipes.getAdapter();
-                if (adapter != null) {
-                    adapter.setRecipeList(recipes);
-                }
+                Collections.shuffle(recipes)
+                val adapter = binding!!.rvRecipes.adapter as RecipeAdapter?
+                adapter?.setRecipeList(recipes)
             }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("Error", error.getMessage());
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Error", error.message)
             }
-        });
+        })
     }
 
-    private void loadByRecipes() {
-
-        String query = getIntent().getStringExtra("query");
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<Recipe> recipes = new ArrayList<>();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    Recipe recipe = dataSnapshot.getValue(Recipe.class);
-                    if (recipe.getName().toLowerCase().contains(query.toLowerCase()))
-                        recipes.add(recipe);
+    private fun loadByRecipes() {
+        val query = intent.getStringExtra("query")
+        reference!!.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val recipes: MutableList<Recipe?> = ArrayList()
+                for (dataSnapshot in snapshot.children) {
+                    val recipe = dataSnapshot.getValue(Recipe::class.java)
+                    if (recipe!!.name!!.lowercase(Locale.getDefault()).contains(
+                            query!!.lowercase(
+                                Locale.getDefault()
+                            )
+                        )
+                    ) recipes.add(recipe)
                 }
-                RecipeAdapter adapter = (RecipeAdapter) binding.rvRecipes.getAdapter();
-                if (adapter != null) {
-                    adapter.setRecipeList(recipes);
-                }
+                val adapter = binding!!.rvRecipes.adapter as RecipeAdapter?
+                adapter?.setRecipeList(recipes)
             }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("Error", error.getMessage());
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Error", error.message)
             }
-        });
+        })
     }
 
-    private void filterByCategory(){
-        String category = getIntent().getStringExtra("category");
-        reference.orderByChild("category").equalTo(category).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<Recipe> recipes = new ArrayList<>();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    Recipe recipe = dataSnapshot.getValue(Recipe.class);
-                    recipes.add(recipe);
+    private fun filterByCategory() {
+        val category = intent.getStringExtra("category")
+        reference!!.orderByChild("category").equalTo(category)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val recipes: MutableList<Recipe?> = ArrayList()
+                    for (dataSnapshot in snapshot.children) {
+                        val recipe = dataSnapshot.getValue(Recipe::class.java)
+                        recipes.add(recipe)
+                    }
+                    val adapter = binding!!.rvRecipes.adapter as RecipeAdapter?
+                    adapter?.setRecipeList(recipes)
                 }
-                RecipeAdapter adapter = (RecipeAdapter) binding.rvRecipes.getAdapter();
-                if (adapter != null) {
-                    adapter.setRecipeList(recipes);
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("Error", error.getMessage());
-            }
-        });
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("Error", error.message)
+                }
+            })
     }
 }
